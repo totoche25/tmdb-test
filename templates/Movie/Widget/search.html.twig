@@ -1,0 +1,9 @@
+{{ form_start(form, {'attr': {'class': 'd-flex col-4'}}) }}
+    {{ form_widget(form.query) }}
+
+    <button class="btn btn-outline-dark" type="submit">
+        <i class="bi bi-search"></i>
+
+        <twig:ux:icon name="bi:search" style="width:12px" />
+    </button>
+{{ form_end(form) }}

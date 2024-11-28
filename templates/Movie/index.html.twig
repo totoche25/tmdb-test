@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {% if genre is defined %}
+        {{ genre.name }} |
+    {% endif %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <h1>
+        {% if genre is defined %}
+            {{ genre.name }}
+        {% else %}
+            Les meilleurs films
+        {% endif %}
+    </h1>
+
+    <div class="row g-0">
+        <p>
+            <small class="text-muted">Nombre de résultats : {{ movies.totalResults }}</small>
+        </p>
+        {% for movie in movies.results %}
+            <div class="col-12">
+                <div class="card bg-body-secondary mb-3">
+                    <div class="row g-0">
+                        <div class="col-md-2">
+                            <img src="https://image.tmdb.org/t/p/w500{{ movie.posterPath }}" class="img-fluid rounded-start" alt="{{ movie.title }}">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ movie.title }}</h5>
+                                <p class="card-text">
+                                    <small class="text-muted">
+                                        {{ movie.releaseYear }}
+                                    </small>
+                                </p>
+                                <div class="mb-2">
+                                    {% set rating = (movie.voteAverage / 2)|round(0, 'floor') %}
+
+                                    <div class="stars d-flex align-items-center">
+                                        <div class="d-flex" style="gap: 2px">
+                                            {% for i in 1..5 %}
+                                                {% if i <= rating %}
+                                                    <twig:ux:icon name="bi:star-fill" class="text-primary" style="width: 14px; height: 14px"/>
+                                                {% else %}
+                                                    <twig:ux:icon name="bi:star" class="text-primary" style="width: 14px; height: 14px"/>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
+                                        <small class="text-muted ms-1">({{ movie.voteCount }} votes)</small>
+                                    </div>
+                                </div>
+                                <p class="card-text">{{ movie.overview|u.truncate(150, '...') }}</p>
+                                <a href="{{ path('app_movie_show', {movieId: movie.id}) }}" class="btn btn-primary btn-sm" data-turbo-frame="modal-content">Lire le détails</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if movies.totalPages > 1 %}
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                {% if currentPage > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path(genre is defined ? 'app_movie_show_by_genre' : 'app_movie_index', {
+                            ...(genre is defined ? {'genreId': genre.id} : {}),
+                            'page': currentPage - 1
+                        }) }}">Précédent</a>
+                    </li>
+                {% endif %}
+
+                {% set startPage = max(1, currentPage - 2) %}
+                {% set endPage = min(movies.totalPages, currentPage + 2) %}
+
+                {% if startPage > 1 %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path(genre is defined ? 'app_movie_show_by_genre' : 'app_movie_index', {
+                            ...(genre is defined ? {'genreId': genre.id} : {}),
+                            'page': 1
+                        }) }}">1</a>
+                    </li>
+                    {% if startPage > 2 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endif %}
+
+                {% for i in startPage..endPage %}
+                    <li class="page-item {{ i == currentPage ? 'active' }}">
+                        <a class="page-link" href="{{ path(genre is defined ? 'app_movie_show_by_genre' : 'app_movie_index', {
+                            ...(genre is defined ? {'genreId': genre.id} : {}),
+                            'page': i
+                        }) }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+
+                {% if endPage < movies.totalPages %}
+                    {% if endPage < movies.totalPages - 1 %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path(genre is defined ? 'app_movie_show_by_genre' : 'app_movie_index', {
+                            ...(genre is defined ? {'genreId': genre.id} : {}),
+                            'page': movies.totalPages
+                        }) }}">{{ movies.totalPages }}</a>
+                    </li>
+                {% endif %}
+
+                {% if currentPage < movies.totalPages %}
+                    <li class="page-item">
+                        <a class="page-link" href="{{ path(genre is defined ? 'app_movie_show_by_genre' : 'app_movie_index', {
+                            ...(genre is defined ? {'genreId': genre.id} : {}),
+                            'page': currentPage + 1
+                        }) }}">Suivant</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% endblock %}

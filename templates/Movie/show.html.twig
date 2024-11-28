@@ -1,0 +1,30 @@
+<turbo-frame id="modal-content">
+    <div class="container mb-4">
+        <div class="card bg-dark my-3">
+            <div class="position-relative">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.backdropPath }}" class="w-100" alt="{{ movie.title }}">
+            </div>
+        </div>
+
+        <h5 class="mb-3">{{ movie.title }} Bande-annonce VF</h5>
+
+        <div class="d-flex align-items-center">
+            <span class="text-muted">Film :</span>
+            <span class="ms-2">{{ movie.title }}</span>
+            <div class="ms-3 d-flex align-items-center">
+                {% set rating = (movie.voteAverage / 2)|round(0, 'floor') %}
+                <div class="d-flex" style="gap: 2px">
+                    {% for i in 1..5 %}
+                        {% if i <= rating %}
+                            <twig:ux:icon name="bi:star-fill" class="text-warning" style="width: 14px; height: 14px"/>
+                        {% else %}
+                            <twig:ux:icon name="bi:star" class="text-warning" style="width: 14px; height: 14px"/>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+                <span class="badge bg-dark ms-2">{{ movie.voteAverage }}</span>
+                <span class="text-muted ms-2">pour {{ movie.voteCount }} utilisateur</span>
+            </div>
+        </div>
+    </div>
+</turbo-frame>

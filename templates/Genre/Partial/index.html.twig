@@ -1,0 +1,8 @@
+<div class="list-group">
+    {% for genre in genres %}
+        {% set active = currentGenre == genre.id %}
+        <a href="{{ path('app_movie_show_by_genre', {genreId: genre.id}) }}" class="list-group-item list-group-item-action {% if active %}active{% endif %}">
+            {{ genre.name }}
+        </a>
+    {% endfor %}
+</div>

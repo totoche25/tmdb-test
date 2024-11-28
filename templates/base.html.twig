@@ -2,16 +2,55 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
+        <title>{% block title %}We Movies{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
         {% block stylesheets %}
+            {{ encore_entry_link_tags('app') }}
         {% endblock %}
 
         {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+            {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar navbar-light bg-body-secondary">
+            <div class="container">
+                <a class="navbar-brand" href="{{ path('app_movie_index') }}">We Movies</a>
+
+                {{ render(url('app_partial_movie_search_widget')) }}
+            </div>
+        </nav>
+
+        <div class="container">
+            {#<div class="ratio ratio-16x9 mb-4">
+                <div class="bg-dark position-relative">
+                    <button class="btn btn-light position-absolute top-50 start-50 translate-middle rounded-circle">
+                        <i class="bi bi-play-fill fs-4"></i>
+                    </button>
+                </div>
+            </div>#}
+
+            <div class="row mt-5">
+                <div class="col-md-3">
+                    {{ render(url('app_partial_genre_index', {currentGenre: app.request.get('genreId')})) }}
+                </div>
+
+                <div class="col-md-9">
+                    {% block body %}{% endblock %}
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade"
+             data-controller="modal"
+             data-action="turbo:frame-load->modal#open turbo:submit-end->modal#close"
+        >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <turbo-frame id="modal-content">
+                    </turbo-frame>
+                </div>
+            </div>
+        </div>
     </body>
 </html>

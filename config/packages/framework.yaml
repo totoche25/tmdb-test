@@ -16,6 +16,17 @@ framework:
     #fragments: true
     php_errors:
         log: true
+    
+    http_client:
+        scoped_clients:
+            tmdb.client:
+                base_uri: '%env(TMDB_API_BASE_URL)%'
+                headers:
+                    Accept: 'application/json'
+                query:
+                    api_key: '%env(TMDB_API_KEY)%'
+                    language: '%env(TMDB_API_LANGUAGE)%'
+                http_version: '2.0'
 
 when@test:
     framework:
